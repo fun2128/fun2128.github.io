@@ -1,0 +1,15 @@
+{
+  "name": "sloppy-joke-care-auog0",
+  "productName": "sloppy-joke-care-auog0",
+  "description": "My Electron application description",
+  "keywords": [],
+  "main": "./main.js",
+  "version": "1.0.0",
+  "author": "Gamer",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^42.0.0-beta.5"
+  }
+}
