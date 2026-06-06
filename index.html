@@ -4,87 +4,76 @@
   <title>Minecraft Seed Finder</title>
 </head>
 
-<body style="font-family: Arial; background:#111; color:white;">
-  <h2>🌍 Minecraft Seed Finder (Feature Detector)</h2>
+<body style="background:#111;color:white;font-family:Arial;">
+  <h2>🌍 Minecraft Seed Finder</h2>
 
-  <button onclick="startScan()">Start Scan</button>
+  <button onclick="scanSeeds()">Start Finding Seeds</button>
+
   <p id="status"></p>
   <ul id="results"></ul>
 
 <script>
-function hash(seed) {
-  let x = seed;
-  x ^= x << 13;
-  x ^= x >> 17;
-  x ^= x << 5;
-  return Math.abs(x);
+function generateSeed() {
+  // REAL seed generator (large Minecraft-style numbers)
+  return BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
 }
 
 function evaluateSeed(seed) {
-  let h = hash(seed);
+  let s = Number(seed % BigInt(1000000));
 
-  let features = [];
   let score = 0;
+  let features = [];
 
-  if ((h % 97) < 5) {
-    features.push("🏡 Village nearby");
-    score += 60;
+  if (s % 7 === 0) {
+    score++;
+    features.push("🏡 Village pattern");
   }
 
-  if ((h % 89) < 20) {
-    features.push("🌳 Flat plains area");
-    score += 30;
+  if (s % 13 === 0) {
+    score++;
+    features.push("🌿 Plains pattern");
   }
 
-  if ((h % 131) < 8) {
-    features.push("❄️ Rare biome chance");
-    score += 50;
+  if (s % 29 === 0) {
+    score++;
+    features.push("⛰ Mountain pattern");
   }
 
-  if ((h % 211) < 3) {
-    features.push("⛏️ Stronghold-like structure");
-    score += 70;
+  if (s % 41 === 0) {
+    score++;
+    features.push("🌊 Ocean mix pattern");
   }
 
   return { score, features };
 }
 
-function startScan() {
+function scanSeeds() {
   const list = document.getElementById("results");
   const status = document.getElementById("status");
 
   list.innerHTML = "";
 
-  let seed = 0;
+  let found = 0;
 
-  function loop() {
-    for (let i = 0; i < 3000; i++) {
-      seed++;
+  for (let i = 0; i < 200; i++) {
+    let seed = generateSeed();
+    let result = evaluateSeed(seed);
 
-      let result = evaluateSeed(seed);
+    if (result.score >= 2) {
+      found++;
 
-      if (result.score >= 100) {
-        let li = document.createElement("li");
+      let li = document.createElement("li");
 
-        li.innerHTML =
-          "Seed: " + seed +
-          " | Score: " + result.score +
-          "<br>Found: " + result.features.join(", ");
+      li.innerHTML =
+        "Seed: " + seed.toString() +
+        "<br>Score: " + result.score +
+        "<br>Found: " + result.features.join(", ");
 
-        list.appendChild(li);
-      }
-    }
-
-    status.textContent = "Scanning seed: " + seed;
-
-    if (seed < 300000) {
-      requestAnimationFrame(loop);
-    } else {
-      status.textContent += " | DONE";
+      list.appendChild(li);
     }
   }
 
-  loop();
+  status.textContent = "Found " + found + " good seeds.";
 }
 </script>
 
